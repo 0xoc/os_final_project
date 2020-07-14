@@ -12,7 +12,7 @@ private:
 	vector<Context> _contexts;
 
 private:
-	void parseLine(string& line);
+	void parseLine(string& line, int lineNumber);
 	string clearLine(string& line);
 
 public:

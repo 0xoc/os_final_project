@@ -4,16 +4,87 @@
 #include <string>
 #include "Logger.h"
 
-void Parser::parseLine(string& line)
+void Parser::parseLine(string& line, int lineNumber)
 {
     line = clearLine(line);
 
-    log(line);
+    if (line.size() > 0) {
+
+        // this line is a comment
+        if (line[0] == '|')
+            return;
+
+        int _token = 0;
+        
+        int _tokenStart = 0;
+        int _tokenEnd = 0;
+
+        string _pid;
+        string _arrivalTime;
+        string _burstTime;
+
+        string* _dest = &_pid;
+
+        // split by ; and extact pid, arrivalTile and burst time 
+        for (int i = 0; i < line.size(); i++) {
+
+            if (_token > 2) {
+                log(string("Error on line ") + to_string(lineNumber), 2);
+                log("Invalid Line", 2);
+                return;
+            }
+
+            if (line[i] == ';') {
+                // select destination
+                string token = line.substr(_tokenStart, _tokenEnd - _tokenStart);
+                *_dest = token;
+                _tokenStart = i + 1;
+                _tokenEnd = i + 1;
+                _token++;
+
+                switch (_token)
+                {
+                case 0:
+                    _dest = &_pid;
+                    break;
+                case 1:
+                    _dest = &_arrivalTime;
+                    break;
+                case 2:
+                    _dest = &_burstTime;
+                    break;
+                default:
+                    log(string("Error on line ") + to_string(lineNumber), 2);
+                    log("Invalid Token", 2);
+                    return;
+                    break;
+                }
+
+            }
+            else {
+                _tokenEnd++;
+            }
+        }
+
+        if (_token != 2) {
+            log(string("Error on line ") + to_string(lineNumber), 2);
+            log("Invalid line, exactly 3 tokens expected", 2);
+            return;
+        }
+
+        // tokenize the last part
+        *_dest = line.substr(_tokenStart, _tokenEnd - _tokenStart);
+
+        _contexts.push_back( Context(_pid, _arrivalTime, _burstTime) );
+
+    } else {
+        log("emtpy line", 1);
+    }
 }
 
 string Parser::clearLine(string& line)
 {
-    char clearChars[3] = { '\n','\t' , ' ' };
+    char clearChars[] = { '\n','\t' , ' ' };
     
     bool isSafe;
 
@@ -50,15 +121,17 @@ Parser::Parser(string fileName)
 
         // split by line
         string _line = "";
+        int lineNumber = 0;
         int _lineStart = 0;
         int _lineEnd = 0;
 
         for (int i = 0; i < _fileData.size() ; i++) {
             if (_fileData[i] == '\n') {
+                lineNumber++;
                 _lineEnd = i;
                 _line = _fileData.substr(_lineStart, _lineEnd - _lineStart + 1);
 
-                parseLine(_line);
+                parseLine(_line, lineNumber);
 
                 _lineStart = i + 1;
                 _lineEnd = i + 1;
