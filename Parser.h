@@ -12,12 +12,14 @@ private:
 	vector<Context> _contexts;
 
 private:
-	void parseLine(string line);
+	void parseLine(string& line);
+	string clearLine(string& line);
+
 public:
 	Parser(string fileName);
 	vector<Context>& getContexts();
 
 public:
-	static string readFile(string fileName);
+	static string readFile(string& fileName);
 };
 

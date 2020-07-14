@@ -4,9 +4,37 @@
 #include <string>
 #include "Logger.h"
 
-void Parser::parseLine(string line)
+void Parser::parseLine(string& line)
 {
+    line = clearLine(line);
+
     log(line);
+}
+
+string Parser::clearLine(string& line)
+{
+    char clearChars[3] = { '\n','\t' , ' ' };
+    
+    bool isSafe;
+
+    string _cleardLine = "";
+
+    for (int i = 0; i < line.size(); i++) {
+        isSafe = true;
+
+        for (int j = 0; j < sizeof(clearChars) / sizeof(char); j++) {
+            if (line[i] == clearChars[j]) {
+                isSafe = false;
+                break;
+            }
+        }
+
+        if (isSafe)
+            _cleardLine += line[i];
+    }
+
+    return _cleardLine;
+
 }
 
 Parser::Parser(string fileName)
@@ -50,7 +78,7 @@ vector<Context>& Parser::getContexts()
     return _contexts;
 }
 
-string Parser::readFile(string fileName)
+string Parser::readFile(string& fileName)
 {
     // read a file as string
     ifstream handle = ifstream(fileName);

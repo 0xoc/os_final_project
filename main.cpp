@@ -19,7 +19,8 @@ void consumer(Context* buffer) {
 
 int main() {
 	
-	cout << Parser::readFile("data/producer.ctx") << endl;
+	Parser parser = Parser("data/producer.ctx");
+
 	return 0;
 	Context* buffer = new Context();
 
