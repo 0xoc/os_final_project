@@ -13,9 +13,10 @@ void Parser::parseLine(string& line, int lineNumber)
         // this line is a comment
         if (line[0] == '|')
             return;
-
+        // number of tokens read from source file
         int _token = 0;
         
+        // beggining and end of a token
         int _tokenStart = 0;
         int _tokenEnd = 0;
 
@@ -23,25 +24,28 @@ void Parser::parseLine(string& line, int lineNumber)
         string _arrivalTime;
         string _burstTime;
 
+        // this could be _pid, _arrivalTime or _burstTime depending on how many tokens have been found
         string* _dest = &_pid;
 
         // split by ; and extact pid, arrivalTile and burst time 
         for (int i = 0; i < line.size(); i++) {
 
+            // only 3 tokens are allowed
             if (_token > 2) {
                 log(string("Error on line ") + to_string(lineNumber), 2);
                 log("Invalid Line", 2);
                 return;
             }
 
+            // the end of a token is detected
             if (line[i] == ';') {
-                // select destination
                 string token = line.substr(_tokenStart, _tokenEnd - _tokenStart);
                 *_dest = token;
                 _tokenStart = i + 1;
                 _tokenEnd = i + 1;
                 _token++;
 
+                // select destination
                 switch (_token)
                 {
                 case 0:
@@ -57,7 +61,6 @@ void Parser::parseLine(string& line, int lineNumber)
                     log(string("Error on line ") + to_string(lineNumber), 2);
                     log("Invalid Token", 2);
                     return;
-                    break;
                 }
 
             }
@@ -75,7 +78,7 @@ void Parser::parseLine(string& line, int lineNumber)
         // tokenize the last part
         *_dest = line.substr(_tokenStart, _tokenEnd - _tokenStart);
 
-        _contexts.push_back( Context(_pid, _arrivalTime, _burstTime) );
+        _contexts.emplace_back(_pid, _arrivalTime, _burstTime);
 
     } else {
         log("emtpy line", 1);

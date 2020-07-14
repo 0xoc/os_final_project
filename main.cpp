@@ -5,34 +5,11 @@
 
 using namespace std;
 
-void producer(Context* buffer) {
-	while(1)
-	cout << "from producer" << endl;
-}
-
-void consumer(Context* buffer) {
-	while(1)
-	cout << "from consumer" << endl;
-}
-
+Context buffer[1];		// main buffer that producer and consumer will use
+int T = 0;				// system time, consumer will increment T as time goes on
 
 
 int main() {
-	
-	Parser parser = Parser("data/producer.ctx");
-
-	return 0;
-	Context* buffer = new Context();
-
-	thread _producer(producer, buffer);
-	thread _consumer(consumer, buffer);
-	
-	cout << "Os project started" << endl;
-	
-	_producer.join();
-	_consumer.join();
-
-	delete buffer;
 
 	return 0;
 }
