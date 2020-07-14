@@ -10,6 +10,9 @@ class Parser
 private:
 	string _fileName;
 	vector<Context> _contexts;
+
+private:
+	void parseLine(string line);
 public:
 	Parser(string fileName);
 	vector<Context>& getContexts();
