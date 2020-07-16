@@ -32,6 +32,16 @@ int Context::getRemainingTime() const
     return _burstTime - _elapesdTime;
 }
 
+int Context::getLastShareStartTime() const
+{
+    return _lastShareStartTime;
+}
+
+int Context::getLastShareTimeQuantom() const
+{
+    return _lastShareTimeQuantom;
+}
+
 bool Context::started(int systemTime) const
 {
     return systemTime >= _arrivalTime;

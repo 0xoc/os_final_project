@@ -47,6 +47,9 @@ public:
 	int getLastShare() const;
 	int getRemainingTime() const;
 
+	int getLastShareStartTime() const;
+	int getLastShareTimeQuantom() const;
+
 	bool started(int systemTime) const;
 	bool ended() const;
 	bool isActive(int systemTime) const;
