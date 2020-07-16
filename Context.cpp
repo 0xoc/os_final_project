@@ -1,16 +1,16 @@
 #include "Context.h"
 
-int Context::getPid()
+int Context::getPid() const
 {
-    return 0;
+    return _pid;
 }
 
-int Context::getArrivalTime()
+int Context::getArrivalTime() const
 {
     return _arrivalTime;
 }
 
-int Context::getBurstTime()
+int Context::getBurstTime() const
 {
     return _burstTime;
 }

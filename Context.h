@@ -19,9 +19,9 @@ public:
 		_arrivalTime = stoi(arrivalTime);
 		_burstTime = stoi(burstTime);
 	}
-	int getPid();
-	int getArrivalTime();
-	int getBurstTime();
+	int getPid() const;
+	int getArrivalTime() const;
+	int getBurstTime() const;
 
 	void setPid(int pid);
 	void setArrivalTile(int arrivalTime);
