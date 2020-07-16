@@ -7,7 +7,6 @@
 using namespace std;
 
 Context buffer[1];		// main buffer that producer and consumer will use
-int T = 0;				// system time, consumer will increment T as time goes on
 
 class RoundRobin {
 public:
@@ -30,12 +29,24 @@ public:
 	}
 };
 
-int SJF (Context& c1, Context& c2) {
-	return 0;
+class SJF {
+public:
+	int operator()(const Context* c1, const Context* c2) {
+		int c1_a = c1->getBurstTime();
+		int c2_a = c2->getBurstTime();
+		if (c1_a == c2_a)
+			c1->getPid() > c2->getPid();
+		return c1_a > c2_a;
+	}
+
+	static int getTimeQ(Context* c) {
+		return c->getRemainingTime();
+	}
 };
 
+
 int main() {
-	Producer<RoundRobin> producer("data/producer.ctx");
+	Producer<SJF> producer("data/producer.ctx");
 
 	producer.tick();
 	return 0;
