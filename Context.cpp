@@ -22,7 +22,14 @@ int Context::getElapsedTime() const
 
 int Context::getLastShare() const
 {
+    if (_lastShare == 0)
+        return _arrivalTime;
     return _lastShare;
+}
+
+int Context::getRemainingTime() const
+{
+    return _burstTime - _elapesdTime;
 }
 
 bool Context::started(int systemTime) const
@@ -59,4 +66,9 @@ void Context::run(int timeQ, int systemTime)
 {
     _elapesdTime += timeQ;
     _lastShare = timeQ + systemTime;
+
+    _lastShareTimeQuantom = timeQ;
+    _lastShareStartTime = systemTime;
+
+    cout << _pid << " : " << systemTime << " - " << _lastShare << endl;
 }

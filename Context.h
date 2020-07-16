@@ -6,31 +6,45 @@ using namespace std;
 class Context
 {
 private:
-	int _pid;			// Proccess ID
-	int _arrivalTime;	// Arrival Time
-	int _burstTime;		// burst time
+	int _pid;						// Proccess ID
+	int _arrivalTime;				// Arrival Time
+	int _burstTime;					// burst time
 
-	int _elapesdTime;	// time that this proccess has run
-	int _lastShare;		// the last time this process ran
+	int _elapesdTime;				// time that this proccess has run
+	int _lastShareStartTime;		// the last time this process ran
+	int _lastShareTimeQuantom;		// duration of the last share
+	int _lastShare;					// _lastShareStartTime + _lastShareTimeQuantom
 
+private:
+	void _zeroInitialize() {
+		_pid = 0; _arrivalTime = 0; _burstTime = 0;
+		_elapesdTime = 0; _lastShareStartTime = 0;
+		_lastShareTimeQuantom = 0; _lastShare = 0;
+	}
+	void _setupInitialize(int pid, int arrivalTime, int burstTime) {
+		
+		_zeroInitialize();
+
+		_pid = pid; _arrivalTime = arrivalTime;
+		_burstTime = burstTime;
+	}
 public:
-	Context(): _pid(0), _arrivalTime(0), _burstTime(0), _elapesdTime(0), _lastShare(0) {}
-	Context(int pid, int arrivalTime, int burstTime) : 
-		_pid(pid), _arrivalTime(arrivalTime), _burstTime(burstTime),
-		_elapesdTime(0), _lastShare(0) {}
-	Context(string pid, string arrivalTime, string burstTime):
-		_elapesdTime(0), _lastShare(0) {
-		_pid = stoi(pid);
-		_arrivalTime = stoi(arrivalTime);
-		_burstTime = stoi(burstTime);
+	Context() { _zeroInitialize(); }
+	Context(int pid, int arrivalTime, int burstTime) { 
+		_setupInitialize(pid, arrivalTime, burstTime); 
+	}
+	Context(string pid, string arrivalTime, string burstTime){
+		_setupInitialize(stoi(pid), stoi(arrivalTime), stoi(burstTime));
 	}
 	
 	int getPid() const;
 	int getArrivalTime() const;
 	int getBurstTime() const;
+	
 	int getElapsedTime() const;
 	int getLastShare() const;
-	
+	int getRemainingTime() const;
+
 	bool started(int systemTime) const;
 	bool ended() const;
 	bool isActive(int systemTime) const;
