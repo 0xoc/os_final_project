@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include "Context.h"
+#include "Semaphore.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ class Producer
 private:
 	int _t;
 	Parser _parser;
+	Buffer* _buffer;
 	priority_queue<Context*, vector<Context*>, Scheduler> _readyQueue;
 
 private:
@@ -43,8 +45,10 @@ private:
 	}
 
 public:
-	Producer(string sourceFile): _t(0) , _parser(Parser(sourceFile)) {
-	}
+	Producer(string sourceFile, Buffer* buffer): 
+		_t(0) , 
+		_parser(Parser(sourceFile)),
+		_buffer(buffer) {}
 
 	void tick() {
 		do {
@@ -56,6 +60,10 @@ public:
 
 				c->run(q, _t);
 				_t += q;
+
+				_buffer->empty.wait();
+				_buffer->currentContext = *c;
+				_buffer->full.signal();
 			} else {
 				_t++;
 			}

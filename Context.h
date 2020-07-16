@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include "Semaphore.h"
+
 using namespace std;
 
 class Context
@@ -60,3 +62,11 @@ public:
 
 };
 
+
+struct Buffer {
+	Context currentContext;
+	Semaphore full;
+	Semaphore empty;
+
+	Buffer() : full(1,1), empty(0,1) {}
+};
