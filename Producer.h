@@ -15,6 +15,7 @@ private:
 	int _t;
 	Parser _parser;
 	Buffer* _buffer;
+	bool* _shouldStop;
 	priority_queue<Context*, vector<Context*>, Scheduler> _readyQueue;
 
 private:
@@ -45,9 +46,10 @@ private:
 	}
 
 public:
-	Producer(string sourceFile, Buffer* buffer): 
+	Producer(string sourceFile, Buffer* buffer, bool* shouldStop): 
 		_t(0) , 
 		_parser(Parser(sourceFile)),
+		_shouldStop(shouldStop),
 		_buffer(buffer) {}
 
 	void tick() {
@@ -68,6 +70,8 @@ public:
 				_t++;
 			}
 		} while (_anyRemains());
+
+		*_shouldStop = true;
 	}
 };
 
