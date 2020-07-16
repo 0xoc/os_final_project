@@ -11,7 +11,7 @@ void Parser::parseLine(string& line, int lineNumber)
     if (line.size() > 0) {
 
         // this line is a comment
-        if (line[0] == '|')
+        if (line[0] == '%')
             return;
         // number of tokens read from source file
         int _token = 0;
