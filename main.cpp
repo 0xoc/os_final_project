@@ -10,14 +10,30 @@
 Buffer* buffer = new Buffer();		// main buffer that producer and consumer will use
 bool* shouldStop = new bool();		// indicates whether all proccesses are done or not
 
-int main() {
-	*shouldStop = false;
-	Producer<RoundRobin> producer("data/producer.ctx", buffer, shouldStop);
-	Consumer consumer(buffer, shouldStop);
+void runProducer();
+void runConsumer();
 
-	producer.tick();
+int main() {
+
+	*shouldStop = false;
+	thread pt = thread(runProducer);
+	thread ct = thread(runConsumer);
+
+	pt.join();
+	ct.join();
 
 	delete buffer;
 	delete shouldStop;
+
 	return 0;
+}
+
+void runProducer() {
+	Producer<RoundRobin> producer("data/producer.ctx", buffer, shouldStop);
+	producer.tick();
+}
+
+void runConsumer() {
+	Consumer consumer(buffer, shouldStop);
+	consumer.consume();
 }

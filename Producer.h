@@ -5,6 +5,7 @@
 #include <vector>
 #include "Context.h"
 #include "Semaphore.h"
+#include <thread>
 
 using namespace std;
 
@@ -63,9 +64,9 @@ public:
 				c->run(q, _t);
 				_t += q;
 
-				_buffer->empty.wait();
+				_buffer->empty.wait("producer empty");
 				_buffer->currentContext = *c;
-				_buffer->full.signal();
+				_buffer->full.signal("producer full");
 			} else {
 				_t++;
 			}
@@ -73,5 +74,6 @@ public:
 
 		*_shouldStop = true;
 	}
+
 };
 

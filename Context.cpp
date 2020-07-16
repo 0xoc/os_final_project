@@ -79,6 +79,4 @@ void Context::run(int timeQ, int systemTime)
 
     _lastShareTimeQuantom = timeQ;
     _lastShareStartTime = systemTime;
-
-    cout << _pid << " : " << systemTime << " - " << _lastShare << endl;
 }

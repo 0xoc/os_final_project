@@ -6,13 +6,21 @@ Consumer::Consumer(Buffer* buffer, bool* shouldStop): _buffer(buffer), _shouldSt
 
 void Consumer::consume()
 {
-	while (!_shouldStop) {
-		_buffer->full.wait();
+	bool run = true;
+
+	while (run) {
+		if (*_shouldStop)
+			run = false;
+
+		_buffer->full.wait("consumer full");
 		Context c = _buffer->currentContext;
-		_buffer->empty.signal();
+		_buffer->empty.signal("consumer empty");
 
 		// if pid of currect context exists in time sheet,
 		// try to append to the last time range
+
+		cout << c.getPid() << " : " << c.getLastShareStartTime() << " - " << c.getLastShare() << endl;
+
 
 		if (_timeSheet.find(c.getPid()) != _timeSheet.end()) {
 			vector< pair<int, int> >& v = _timeSheet[c.getPid()];

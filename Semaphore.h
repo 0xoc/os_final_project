@@ -6,38 +6,32 @@
 
 using namespace std;
 
+#include <mutex>
+#include <condition_variable>
+
 class Semaphore {
-
-private:
-	std::mutex mtx;
-	std::condition_variable cv;
-	int max;
-	int count;
-
-
 public:
-	Semaphore(int count_, int max_)
-		: count(count_), max(max_) {}
+    Semaphore(int count_ = 0)
+        : count(count_)
+    {
+    }
 
-	int get_count() {
-		return this->count;
-	}
-
-	void signal()
-	{
-		unique_lock<mutex> lock(mtx);
-		if (count < this->max) count++;
-		cv.notify_one();
-	}
-
-	void wait()
-	{
-		unique_lock<mutex> lock(mtx);
-
-		while (count == 0) {
-			cv.wait(lock);
-		}
-		count--;
-	}
-
+    inline void signal(string msg) {
+ //       cout << "signal " << msg << endl;
+        std::unique_lock<std::mutex> lock(mtx);
+        count++;
+        cv.notify_one();
+    }
+    inline void wait(string msg) {
+ //       cout << "wait " << msg << endl;
+        std::unique_lock<std::mutex> lock(mtx);
+        while (count == 0) {
+            cv.wait(lock);
+        }
+        count--;
+    }
+private:
+    std::mutex mtx;
+    std::condition_variable cv;
+    int count;
 };
