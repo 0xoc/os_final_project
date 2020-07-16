@@ -25,6 +25,21 @@ int Context::getLastShare() const
     return _lastShare;
 }
 
+bool Context::started(int systemTime) const
+{
+    return systemTime >= _arrivalTime;
+}
+
+bool Context::ended() const
+{
+    return _elapesdTime >= _burstTime;
+}
+
+bool Context::isActive(int systemTime) const
+{
+    return started(systemTime) && !ended();
+}
+
 void Context::setPid(int pid)
 {
     _pid = pid;

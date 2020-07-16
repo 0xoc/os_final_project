@@ -30,6 +30,10 @@ public:
 	int getBurstTime() const;
 	int getElapsedTime() const;
 	int getLastShare() const;
+	
+	bool started(int systemTime) const;
+	bool ended() const;
+	bool isActive(int systemTime) const;
 
 	void setPid(int pid);
 	void setArrivalTile(int arrivalTime);
