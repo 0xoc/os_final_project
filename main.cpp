@@ -40,6 +40,6 @@ void runProducer() {
 void runConsumer() {
 	Consumer consumer(buffer, shouldStop);
 	consumer.consume();
-
+	consumer.printTimeSheet();
 	Logger::log("Consumer Finished");
 }

@@ -31,17 +31,12 @@ void Consumer::printTimeSheet()
 
 void Consumer::consume()
 {
-	bool run = true;
 
-	while (run) {
-
-		_mutex.wait("");
-		if (*_shouldStop)
-			run = false;
-		_mutex.signal("");
+	while (!*_shouldStop || _buffer->count != 0) {
 
 		_buffer->full.wait("consumer full");
 		Context c = _buffer->currentContext;
+		_buffer->count--;
 		_buffer->empty.signal("consumer empty");
 
 		// if pid of currect context exists in time sheet,
@@ -69,6 +64,6 @@ void Consumer::consume()
 			);
 		}
 
-		printTimeSheet();
+//		printTimeSheet();
 	}
 }

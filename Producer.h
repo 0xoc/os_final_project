@@ -68,6 +68,7 @@ public:
 
 				_buffer->empty.wait("producer empty");
 				_buffer->currentContext = *c;
+				_buffer->count++;
 				_buffer->full.signal("producer full");
 			} else {
 				_t++;

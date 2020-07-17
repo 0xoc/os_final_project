@@ -71,5 +71,7 @@ struct Buffer {
 	Semaphore full;
 	Semaphore empty;
 
-	Buffer() : full(0), empty(1) {}
+	int count;
+
+	Buffer() : full(0), empty(1), count(0) {}
 };
