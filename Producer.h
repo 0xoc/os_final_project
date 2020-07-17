@@ -72,6 +72,7 @@ public:
 				_buffer->full.signal("producer full");
 			} else {
 				_t++;
+
 			}
 		} while (_anyRemains());
 

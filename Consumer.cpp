@@ -64,6 +64,6 @@ void Consumer::consume()
 			);
 		}
 
-//		printTimeSheet();
+		printTimeSheet();
 	}
 }
