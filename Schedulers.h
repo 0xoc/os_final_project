@@ -12,7 +12,7 @@ public:
 	}
 
 	static int getTimeQ(Context* c) {
-		int q = 1;
+		int q = 100;
 
 		if (c->getRemainingTime() > q)
 			return q;

@@ -80,3 +80,10 @@ void Context::run(int timeQ, int systemTime)
     _lastShareTimeQuantom = timeQ;
     _lastShareStartTime = systemTime;
 }
+
+Context* Context::getIdleContext(int timeQ, int systemTime)
+{
+    static Context* _idleContext = new Context(-2, systemTime, 0);
+
+    return _idleContext;
+}

@@ -16,7 +16,7 @@ void Consumer::printTimeSheet()
 
 	for (auto it = _timeSheet.begin(); it != _timeSheet.end(); it++)
 	{
-		consumerFile << "P" << it->first << endl;// string (key) 
+		consumerFile << "P (" << it->first << ")"<< endl;// string (key) 
 
 		auto v = it->second;
 
@@ -39,6 +39,11 @@ void Consumer::printStats()
 	float throughput = 0;
 
 	for (auto it = _history.begin(); it != _history.end(); it++) {
+
+		// ignore the idle context
+		if (it->first == -2)
+			continue;
+
 		Stats _p = getStatsOf(it->first);
 		atat += _p.tat;
 		awt += _p.wt;

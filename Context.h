@@ -35,6 +35,8 @@ public:
 	void setArrivalTile(int arrivalTime);
 	void setBurstTime(int burstTime);
 	void run(int timeQ, int systemTime);
+	static Context* getIdleContext(int timeQ, int systemTime);
+
 
 	void print() {
 		cout << _pid << ";" << _arrivalTime << ';' << _burstTime << endl;
