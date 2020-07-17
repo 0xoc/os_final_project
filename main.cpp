@@ -10,19 +10,23 @@
 
 Buffer* buffer = new Buffer();		// main buffer that producer and consumer will use
 bool* shouldStop = new bool();		// indicates whether all proccesses are done or not
-Semaphore _mutex(1);
+Semaphore _mutex(1);				// controls changes to shouldStop variable
 
-void runProducer();
-void runConsumer();
+void runProducer();						// producer thread function
+void runConsumer(Consumer* consumer);	// consumer thread funciton
 
 int main() {
 
 	*shouldStop = false;
+	Consumer consumer(buffer, shouldStop);
+
 	thread pt = thread(runProducer);
-	thread ct = thread(runConsumer);
+	thread ct = thread(runConsumer, &consumer);
 
 	pt.join();
 	ct.join();
+
+	Logger::log("Consumer Finished");
 
 	delete buffer;
 	delete shouldStop;
@@ -37,8 +41,6 @@ void runProducer() {
 	Logger::log("Producer Finished");
 }
 
-void runConsumer() {
-	Consumer consumer(buffer, shouldStop);
-	consumer.consume();
-	Logger::log("Consumer Finished");
+void runConsumer(Consumer* consumer) {
+	consumer->consume();
 }
