@@ -9,6 +9,8 @@
 
 using namespace std;
 
+extern Semaphore _mutex;
+
 template<class Scheduler>
 class Producer
 {
@@ -72,7 +74,10 @@ public:
 			}
 		} while (_anyRemains());
 
+		_mutex.wait("producer should stop");
 		*_shouldStop = true;
+		_mutex.signal("producer shoudl stop ");
+
 	}
 
 };

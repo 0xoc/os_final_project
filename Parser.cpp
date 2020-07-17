@@ -32,8 +32,8 @@ void Parser::parseLine(string& line, int lineNumber)
 
             // only 3 tokens are allowed
             if (_token > 2) {
-                log(string("Error on line ") + to_string(lineNumber), 2);
-                log("Invalid Line", 2);
+                Logger::log(string("Error on line ") + to_string(lineNumber), 2);
+                Logger::log("Invalid Line", 2);
                 return;
             }
 
@@ -58,8 +58,8 @@ void Parser::parseLine(string& line, int lineNumber)
                     _dest = &_burstTime;
                     break;
                 default:
-                    log(string("Error on line ") + to_string(lineNumber), 2);
-                    log("Invalid Token", 2);
+                    Logger::log(string("Error on line ") + to_string(lineNumber), 2);
+                    Logger::log("Invalid Token", 2);
                     return;
                 }
 
@@ -70,8 +70,8 @@ void Parser::parseLine(string& line, int lineNumber)
         }
 
         if (_token != 2) {
-            log(string("Error on line ") + to_string(lineNumber), 2);
-            log("Invalid line, exactly 3 tokens expected", 2);
+            Logger::log(string("Error on line ") + to_string(lineNumber), 2);
+            Logger::log("Invalid line, exactly 3 tokens expected", 2);
             return;
         }
 
@@ -81,7 +81,7 @@ void Parser::parseLine(string& line, int lineNumber)
         _contexts.emplace_back(_pid, _arrivalTime, _burstTime);
 
     } else {
-        log("emtpy line", 1);
+        Logger::log("emtpy line", 1);
     }
 }
 
@@ -120,7 +120,7 @@ Parser::Parser(string fileName)
 
     if (_fileData != string()) {
         // file read successfuly
-        log("Parsing Context File");
+        Logger::log("Parsing Context File");
 
         // split by line
         string _line = "";

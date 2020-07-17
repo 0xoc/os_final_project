@@ -13,7 +13,7 @@ private:
 	map<int, vector<pair<int, int > > > _timeSheet;
 public:
 	Consumer(Buffer* buffer, bool* shouldStop);
-
+	void printTimeSheet();
 	void consume();
 };
 
