@@ -7,7 +7,7 @@ public:
 		int c1_a = c1->getLastShare();
 		int c2_a = c2->getLastShare();
 		if (c1_a == c2_a)
-			c1->getPid() > c2->getPid();
+			return c1->getPid() > c2->getPid();
 		return c1_a > c2_a;
 	}
 
@@ -28,7 +28,7 @@ public:
 		int c1_a = c1->getBurstTime();
 		int c2_a = c2->getBurstTime();
 		if (c1_a == c2_a)
-			c1->getPid() > c2->getPid();
+			return c1->getPid() > c2->getPid();
 		return c1_a > c2_a;
 	}
 
@@ -43,7 +43,7 @@ public:
 		int c1_a = c1->getRemainingTime();
 		int c2_a = c2->getRemainingTime();
 		if (c1_a == c2_a)
-			c1->getPid() > c2->getPid();
+			return c1->getPid() > c2->getPid();
 		return c1_a > c2_a;
 	}
 
