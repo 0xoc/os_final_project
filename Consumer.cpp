@@ -1,7 +1,7 @@
 #include "Consumer.h"
 # include <fstream>
 
-Consumer::Consumer(Buffer* buffer): _buffer(buffer)
+Consumer::Consumer(Buffer* buffer): _buffer(buffer), _lastShareTime(0)
 {
 }
 
@@ -31,6 +31,9 @@ void Consumer::printTimeSheet()
 
 void Consumer::printStats()
 {
+	ofstream statsFile;
+	statsFile.open("data/stats.txt");
+
 	// generate stats
 	float atat = 0;
 	float awt = 0;
@@ -56,19 +59,35 @@ void Consumer::printStats()
 	awt /= l;
 	art /= l;
 
-	cout << "ATAT: " << atat << endl;
-	cout << "AWT: " << awt << endl;
-	cout << "ART: " << art << endl;
+
+	// idle stats
+	Stats idle = getStatsOf(-2);
+
+	cpuUtilization = (_lastShareTime - idle.elapesdTime) / _lastShareTime;
+	throughput = numberOfConsumedProc() / (_lastShareTime * 0.001);
+
+	statsFile << "ATAT: " << atat << endl;
+	statsFile << "AWT: " << awt << endl;
+	statsFile << "ART: " << art << endl;
+	statsFile << "CPU UTILIZATION: " << cpuUtilization << endl;
+	statsFile << "THROUGHPUT: " << throughput << endl;
+
+	statsFile.close();
 
 }
 
 Stats Consumer::getStatsOf(int pid)
 {
 	Stats s;
+
+	if (_history.find(pid) == _history.end())
+		return s;
+
 	Context& lastContext = _history[pid];
 	s.tat = lastContext.getLastShare() - lastContext.getArrivalTime();
 	s.wt = s.tat - lastContext.getBurstTime();
 	s.rt = _timeSheet[pid][0].second - lastContext.getArrivalTime();
+	s.elapesdTime = lastContext.getElapsedTime();
 
 	return s;
 }
@@ -89,6 +108,9 @@ void Consumer::consume()
 
 		// add it to history
 		_history[c.getPid()] = c;
+
+		// update last share
+		_lastShareTime = c.getLastShare();
 
 		// if pid of currect context exists in time sheet,
 		// try to append to the last time range
@@ -117,4 +139,11 @@ void Consumer::consume()
 
 		printTimeSheet();
 	}
+}
+
+int Consumer::numberOfConsumedProc()
+{
+	if (_history.find(-2) == _history.end())
+		return _history.size();
+	return _history.size() - 1;
 }

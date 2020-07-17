@@ -9,8 +9,9 @@ struct Stats {
 	float tat;
 	float wt;
 	float rt;
+	float elapesdTime;
 
-	Stats() : tat(0), wt(0), rt(0) {}
+	Stats() : tat(0), wt(0), rt(0), elapesdTime(0) {}
 };
 
 class Consumer
@@ -21,6 +22,7 @@ public:
 	void printStats();
 	Stats getStatsOf(int pid);
 	void consume();
+	int numberOfConsumedProc();
 
 private:
 	Buffer* _buffer;	// the global buffer used form context passing
@@ -30,6 +32,8 @@ private:
 
 	// history of the latest context for each pid
 	map<int, Context> _history;
+
+	int _lastShareTime;	// finishd time of the last consumed proccess
 
 };
 
