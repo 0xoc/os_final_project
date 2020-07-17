@@ -15,6 +15,13 @@ struct Stats {
 
 class Consumer
 {
+public:
+	Consumer(Buffer* buffer);
+	void printTimeSheet();
+	void printStats();
+	Stats getStatsOf(int pid);
+	void consume();
+
 private:
 	Buffer* _buffer;	// the global buffer used form context passing
 
@@ -24,11 +31,5 @@ private:
 	// history of the latest context for each pid
 	map<int, Context> _history;
 
-public:
-	Consumer(Buffer* buffer);
-	void printTimeSheet();
-	void printStats();
-	Stats getStatsOf(int pid);
-	void consume();
 };
 

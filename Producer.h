@@ -14,6 +14,43 @@ extern Semaphore _mutex;
 template<class Scheduler>
 class Producer
 {
+
+public:
+	Producer(string sourceFile, Buffer* buffer) :
+		_t(0),
+		_parser(Parser(sourceFile)),
+		_buffer(buffer) {}
+
+	void putOnBuffer(Context c) {
+		_buffer->empty.wait("producer empty");
+		_buffer->currentContext = c;
+		_buffer->count++;
+		_buffer->full.signal("producer full");
+	}
+
+	void tick() {
+		do {
+			_updateActiveProcesses();
+			if (!_readyQueue.empty()) {
+				// produce
+				Context* c = _readyQueue.top();
+				int q = Scheduler::getTimeQ(c);
+
+				c->run(q, _t);
+				_t += q;
+
+				putOnBuffer(*c);
+
+			}
+			else {
+				_t++;
+
+			}
+		} while (_anyRemains());
+
+		putOnBuffer(Context(-1, 0, 0));
+	}
+
 private:
 	int _t;
 	Parser _parser;
@@ -45,41 +82,6 @@ private:
 		}
 
 		return false;
-	}
-
-public:
-	Producer(string sourceFile, Buffer* buffer): 
-		_t(0) , 
-		_parser(Parser(sourceFile)),
-		_buffer(buffer) {}
-
-	void putOnBuffer(Context c) {
-		_buffer->empty.wait("producer empty");
-		_buffer->currentContext = c;
-		_buffer->count++;
-		_buffer->full.signal("producer full");
-	}
-
-	void tick() {
-		do {
-			_updateActiveProcesses();
-			if (!_readyQueue.empty()) {
-				// produce
-				Context* c = _readyQueue.top();
-				int q = Scheduler::getTimeQ(c);
-
-				c->run(q, _t);
-				_t += q;
-
-				putOnBuffer(*c);
-				
-			} else {
-				_t++;
-
-			}
-		} while (_anyRemains());
-
-		putOnBuffer(Context(-1, 0, 0));
 	}
 
 };
