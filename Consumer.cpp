@@ -1,7 +1,7 @@
 #include "Consumer.h"
 # include <fstream>
 
-Consumer::Consumer(Buffer* buffer, bool* shouldStop): _buffer(buffer), _shouldStop(shouldStop)
+Consumer::Consumer(Buffer* buffer): _buffer(buffer)
 {
 }
 
@@ -29,15 +29,61 @@ void Consumer::printTimeSheet()
 
 }
 
+void Consumer::printStats()
+{
+	// generate stats
+	float atat = 0;
+	float awt = 0;
+	float art = 0;
+	float cpuUtilization = 0;
+	float throughput = 0;
+
+	for (auto it = _history.begin(); it != _history.end(); it++) {
+		Stats _p = getStatsOf(it->first);
+		atat += _p.tat;
+		awt += _p.wt;
+		art += _p.rt;
+	}
+
+	// avg
+	int l = _history.size();
+	atat /= l; 
+	awt /= l;
+	art /= l;
+
+	cout << "ATAT: " << atat << endl;
+	cout << "AWT: " << awt << endl;
+	cout << "ART: " << art << endl;
+
+}
+
+Stats Consumer::getStatsOf(int pid)
+{
+	Stats s;
+	Context& lastContext = _history[pid];
+	s.tat = lastContext.getLastShare() - lastContext.getArrivalTime();
+	s.wt = s.tat - lastContext.getBurstTime();
+	s.rt = _timeSheet[pid][0].second - lastContext.getArrivalTime();
+
+	return s;
+}
+
 void Consumer::consume()
 {
 
-	while (!*_shouldStop || _buffer->count != 0) {
+	while (true) {
 
 		_buffer->full.wait("consumer full");
 		Context c = _buffer->currentContext;
 		_buffer->count--;
 		_buffer->empty.signal("consumer empty");
+
+		// if pid is -1, producer has finished all proccesses
+		if (c.getPid() == -1)
+			break;
+
+		// add it to history
+		_history[c.getPid()] = c;
 
 		// if pid of currect context exists in time sheet,
 		// try to append to the last time range

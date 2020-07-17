@@ -18,7 +18,6 @@ private:
 	int _t;
 	Parser _parser;
 	Buffer* _buffer;
-	bool* _shouldStop;
 	priority_queue<Context*, vector<Context*>, Scheduler> _readyQueue;
 
 private:
@@ -49,11 +48,17 @@ private:
 	}
 
 public:
-	Producer(string sourceFile, Buffer* buffer, bool* shouldStop): 
+	Producer(string sourceFile, Buffer* buffer): 
 		_t(0) , 
 		_parser(Parser(sourceFile)),
-		_shouldStop(shouldStop),
 		_buffer(buffer) {}
+
+	void putOnBuffer(Context c) {
+		_buffer->empty.wait("producer empty");
+		_buffer->currentContext = c;
+		_buffer->count++;
+		_buffer->full.signal("producer full");
+	}
 
 	void tick() {
 		do {
@@ -66,20 +71,15 @@ public:
 				c->run(q, _t);
 				_t += q;
 
-				_buffer->empty.wait("producer empty");
-				_buffer->currentContext = *c;
-				_buffer->count++;
-				_buffer->full.signal("producer full");
+				putOnBuffer(*c);
+				
 			} else {
 				_t++;
 
 			}
 		} while (_anyRemains());
 
-		_mutex.wait("producer should stop");
-		*_shouldStop = true;
-		_mutex.signal("producer shoudl stop ");
-
+		putOnBuffer(Context(-1, 0, 0));
 	}
 
 };
